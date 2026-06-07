@@ -86,7 +86,7 @@ with sync_playwright() as p:
     elif new_result != old_result:
         print("CHANGE DETECTED!")
         save_last_result(new_result)
-        send_telegram("🔔 AUST Result Update\n\nYour semester result page has changed.")
+        send_telegram("🔔 AUST Result Update\n\nYour semester result has published.")
     else:
         print("No change detected.")
 
