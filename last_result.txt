@@ -2,6 +2,7 @@ Result of Semester Final Examinations
 Course Number	Course Title	Course Credit	Final
 			Letter Grade	Grade Point
 IPE 2211	Manufacturing Processes-II	3	A+	4.0
+IPE 2215	Measurement, Instrumentation and Control	3	A+	4.0
 MATH 2211	Probability and Statistics	4	A+	4.0
 ME 2277	Thermodynamics and Heat Transfer	3	A+	4.0
 IPE 2212	Manufacturing Processes-II Sessional	1.5	A+	4.0
