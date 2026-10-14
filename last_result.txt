@@ -8,4 +8,5 @@ MATH 2211	Probability and Statistics	4	A+	4.0
 ME 2277	Thermodynamics and Heat Transfer	3	A+	4.0
 IPE 2212	Manufacturing Processes-II Sessional	1.5	A+	4.0
 IPE 2214	Ergonomics, Productivity and Safety Engineering Sessional	1.5	A+	4.0
+IPE 2216	Measurement, Instrumentation and Control Sessional	0.75	D	2.0
 ME 2278	Thermodynamics and Heat Transfer Sessional	0.75	A+	4.0
