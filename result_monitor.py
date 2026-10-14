@@ -8,7 +8,7 @@ BOT_TOKEN = os.environ.get("BOT_TOKEN", "")
 
 CHAT_ID = "8573701528"
 
-SEMESTER_LABEL = "Fall, 2025"
+SEMESTER_LABEL = "Spring, 2025"
 
 FILE_PATH = "last_result.txt"
 
