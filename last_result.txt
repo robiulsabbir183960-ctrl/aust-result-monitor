@@ -1,0 +1,3 @@
+Result of Semester Final Examinations
+Course Number	Course Title	Course Credit	Final
+			Letter Grade	Grade Point
