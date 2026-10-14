@@ -16,14 +16,15 @@ FILE_PATH = "last_result.txt"
 def load_previous_courses():
     if os.path.exists(FILE_PATH):
         with open(FILE_PATH, "r", encoding="utf-8") as f:
-            return set(f.read().splitlines())
+            return set(line.strip() for line in f if line.strip())
+
     return set()
 
 
-def save_courses(courses):
+def save_courses(course_codes):
     with open(FILE_PATH, "w", encoding="utf-8") as f:
-        for course in sorted(courses):
-            f.write(course + "\n")
+        for code in sorted(course_codes):
+            f.write(code + "\n")
 
 
 def send_telegram(message):
@@ -34,7 +35,7 @@ def send_telegram(message):
                 "chat_id": CHAT_ID,
                 "text": message
             },
-            timeout=15,
+            timeout=15
         )
     except Exception as e:
         print("Telegram error:", e)
@@ -42,39 +43,36 @@ def send_telegram(message):
 
 def extract_courses(page):
 
-    courses = []
+    results = []
 
-    rows = page.locator("table tbody tr")
+    rows = page.locator("table tr")
 
-    count = rows.count()
-
-    for i in range(count):
+    for i in range(rows.count()):
 
         cells = rows.nth(i).locator("td")
 
         if cells.count() >= 5:
 
             course_number = cells.nth(0).inner_text().strip()
-
             course_title = cells.nth(1).inner_text().strip()
-
             grade = cells.nth(3).inner_text().strip()
-
             grade_point = cells.nth(4).inner_text().strip()
 
 
+            # Ignore empty rows
             if course_number and grade:
 
-                course_data = {
-                    "number": course_number,
-                    "title": course_title,
-                    "grade": grade,
-                    "point": grade_point
-                }
+                results.append(
+                    {
+                        "number": course_number,
+                        "title": course_title,
+                        "grade": grade,
+                        "point": grade_point
+                    }
+                )
 
-                courses.append(course_data)
 
-    return courses
+    return results
 
 
 
@@ -119,7 +117,6 @@ with sync_playwright() as p:
 
     page.keyboard.press("Enter")
 
-
     page.wait_for_timeout(5000)
 
 
@@ -138,55 +135,39 @@ with sync_playwright() as p:
 
     page.get_by_text("Show Result").click()
 
-
     page.wait_for_timeout(10000)
-
 
 
     print("Extracting result...")
 
 
-    current_courses = extract_courses(page)
+    current_results = extract_courses(page)
 
 
 
-    previous_courses = load_previous_courses()
-
-
-
-    if not current_courses:
+    if not current_results:
 
         print("No result available yet.")
 
 
-
     else:
+
+        previous_courses = load_previous_courses()
 
 
         current_codes = {
-            c["number"]
-            for c in current_courses
+            r["number"]
+            for r in current_results
         }
 
 
-        new_courses = [
-            c for c in current_courses
-            if c["number"] not in previous_courses
+        new_results = [
+            r for r in current_results
+            if r["number"] not in previous_courses
         ]
 
 
-
-        if not previous_courses:
-
-            save_courses(current_codes)
-
-            print(
-                "Baseline created. No Telegram sent."
-            )
-
-
-        elif new_courses:
-
+        if new_results:
 
             message = (
                 "🔔 AUST Fall 2025 Result Update\n\n"
@@ -194,32 +175,27 @@ with sync_playwright() as p:
             )
 
 
-            for c in new_courses:
+            for r in new_results:
 
                 message += (
-                    f"{c['number']}\n"
-                    f"{c['title']}\n\n"
-                    f"Grade: {c['grade']}\n"
-                    f"Grade Point: {c['point']}\n\n"
+                    f"{r['number']}\n"
+                    f"{r['title']}\n\n"
+                    f"Grade: {r['grade']}\n"
+                    f"Grade Point: {r['point']}\n\n"
                 )
 
 
             send_telegram(message)
 
-
-            save_courses(current_codes)
-
-
-            print(
-                "New result sent."
-            )
+            print("New result sent.")
 
 
         else:
 
-            print(
-                "No new result."
-            )
+            print("No new result.")
+
+
+        save_courses(current_codes)
 
 
 
