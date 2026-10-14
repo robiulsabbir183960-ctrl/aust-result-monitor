@@ -31,10 +31,13 @@ jobs:
           BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
         run: python result_monitor.py
 
-      - name: Save last_result.txt
+      - name: Save result memory
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add last_result.txt
-          git diff --cached --quiet || git commit -m "Update result [skip ci]"
+
+          git add -A
+
+          git diff --cached --quiet || git commit -m "Update result memory [skip ci]"
+
           git push
